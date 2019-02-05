@@ -226,7 +226,7 @@ SELECT c.name AS 'Genre', SUM(p.amount) AS 'Gross Revenue'
 FROM category c, film_category fc, inventory i, rental r, payment p
 WHERE c.category_id = fc.category_id AND fc.film_id = i.film_id AND i.inventory_id = r.inventory_id AND r.rental_id = p.rental_id
 GROUP BY Genre
-ORDER BY 'Gross Revenue' DESC LIMIT 5;
+ORDER BY SUM(p.amount) DESC LIMIT 5;
 
 	-- Using JOINS
     SELECT c.name AS 'Genre', SUM(p.amount) AS 'Gross Revenue' 
@@ -235,15 +235,32 @@ ORDER BY 'Gross Revenue' DESC LIMIT 5;
 	JOIN inventory i ON (fc.film_id = i.film_id)
 	JOIN rental r ON (i.inventory_id = r.inventory_id)
 	JOIN payment p ON (r.rental_id = p.rental_id)
-	GROUP BY c.name ORDER BY 'Gross Revenue' LIMIT 5;
-
+	GROUP BY c.name 
+    ORDER BY SUM(p.amount) DESC LIMIT 5;
 
 -- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
-
+CREATE VIEW top_five_genres AS
+	SELECT c.name AS 'Genre', SUM(p.amount) AS 'Gross Revenue' 
+	FROM category c
+	JOIN film_category fc ON (c.category_id = fc.category_id)
+	JOIN inventory i ON (fc.film_id = i.film_id)
+	JOIN rental r ON (i.inventory_id = r.inventory_id)
+	JOIN payment p ON (r.rental_id = p.rental_id)
+	GROUP BY c.name 
+    ORDER BY SUM(p.amount) DESC LIMIT 5;
+    
 -- 8b. How would you display the view that you created in 8a?
+SELECT *
+FROM top_five_genres;
 
 -- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
+SHOW TABLES;
 
+DROP VIEW top_five_genres;
+
+SHOW TABLES;
+
+-- END OF SQL QUERY HOMEWORK -------------------------------------------------------------------------------------------------
 
 
 
